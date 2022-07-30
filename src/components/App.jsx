@@ -7,23 +7,13 @@ import { ContactList } from './ContactList/ContactList';
 import { useRef } from 'react';
 
 export const App = () => {
-  const [contacts, setContacts] = useState(contactsUsers);
+  const [contacts, setContacts] = useState(
+    () => JSON.parse(localStorage.getItem('contacts')) ?? contactsUsers
+  );
   const [filter, setFilter] = useState('');
-  const firstRender = useRef(true);
 
   useEffect(() => {
-    const contactsLocal = localStorage.getItem('contacts');
-    if (contactsLocal) {
-      setContacts(JSON.parse(contactsLocal));
-    }
-  }, []);
-  useEffect(() => {
-    if (!firstRender.current) {
-      localStorage.setItem('contacts', JSON.stringify(contacts));
-    }
-    return () => {
-      firstRender.current = false;
-    };
+    localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
   const deleteContactsItem = itemId => {
